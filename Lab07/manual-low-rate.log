@@ -1,0 +1,20 @@
+Connecting to host 127.0.0.1, port 35207
+[  5] local 127.0.0.1 port 46542 connected to 127.0.0.1 port 35207
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   128 KBytes  1.05 Mbits/sec    0    585 KBytes       
+[  5]   1.00-2.00   sec   128 KBytes  1.05 Mbits/sec    0    639 KBytes       
+[  5]   2.00-3.00   sec   128 KBytes  1.05 Mbits/sec    0    639 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-3.00   sec   384 KBytes  1.05 Mbits/sec    0             sender
+[  5]   0.00-3.00   sec   384 KBytes  1.05 Mbits/sec                  receiver
+
+iperf Done.
+
+stderr: <empty>
+returncode: 0
+{'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1050000.0, 'Retr': 0, 'CwndBytes': 599040.0}
+{'Interval': '1.00-2.00', 'StartSeconds': 1.0, 'EndSeconds': 2.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1050000.0, 'Retr': 0, 'CwndBytes': 654336.0}
+{'Interval': '2.00-3.00', 'StartSeconds': 2.0, 'EndSeconds': 3.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1050000.0, 'Retr': 0, 'CwndBytes': 654336.0}
+Threshold check: FAIL
+Reason: Transfer <= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1050000.0, 'Retr': 0, 'CwndBytes': 599040.0}

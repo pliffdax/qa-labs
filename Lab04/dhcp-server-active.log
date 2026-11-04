@@ -1,0 +1,12 @@
+Internet Systems Consortium DHCP Server 4.4.3-P1
+Copyright 2004-2022 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+Config file: /etc/dhcp/qa3520.conf
+Database file: /var/lib/dhcp/dhcpd.leases.s4
+PID file: /run/dhcpd-s4.pid
+Wrote 0 leases to leases file.
+Listening on LPF/r0/c6:51:1b:1b:2d:6b/10.35.20.0/24
+Sending on   LPF/r0/c6:51:1b:1b:2d:6b/10.35.20.0/24
+Sending on   Socket/fallback/fallback-net
+Can't create PID file /run/dhcpd-s4.pid: Permission denied.

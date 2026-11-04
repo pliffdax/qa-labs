@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/pliffdax/s7
+collecting ... collected 1 item
+
+test_iperf.py::test_throughput PASSED
+
+---------- generated xml file: /home/pliffdax/s7/run/ssh-positive.xml ----------
+============================== 1 passed in 19.82s ==============================

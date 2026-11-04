@@ -1,0 +1,3 @@
+cd ../s7
+iperf3 -s -B 127.0.0.1 -p 35207
+history -w history-server.txt

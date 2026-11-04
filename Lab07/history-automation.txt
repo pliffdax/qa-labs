@@ -1,0 +1,23 @@
+cd ../s7
+whoami
+date
+python3 -m pytest -q test_parser.py test_result_classification.py | tee unit-tests.txt
+python3 --version
+iperf3 --version
+python3 -c "import pytest, paramiko; print(pytest.__version__, paramiko.__version__)"
+systemctl is-active ssh
+mkdir run
+set -o pipefail
+python3 run_positive.py run | tee manual-positive.log
+python3 check_positive.py run | tee manual-parser.log
+python3 run_low_rate.py run | tee manual-low-rate.log
+echo $?
+python3 -m pytest -v --tb=short test_iperf.py --case positive --evidence run/positive --junitxml run/positive.xml | tee pytest-positive.log
+echo $? > run/positive.exit
+python3 -m pytest -v --tb=short test_iperf.py --case low-rate --evidence run/low-rate --junitxml run/low-rate.xml | tee pytest-low-rate.log
+echo $? > run/low-rate.exit
+python3 -m pytest -v --tb=short test_iperf.py --case closed-port --evidence run/closed-port --junitxml run/closed-port.xml | tee pytest-closed-port.log
+echo $? > run/closed-port.exit
+python3 -m pytest -s -v --tb=short test_iperf.py --ssh --case positive --evidence run/ssh-positive --junitxml run/ssh-positive.xml | tee pytest-ssh-positive.log
+echo $? > run/ssh-positive.exit
+history -w history-automation.txt

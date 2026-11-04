@@ -1,0 +1,51 @@
+{
+  "vmstat65000.txt": {
+    "samples_after_first_cumulative_row_removed": 504,
+    "averages_percent": {
+      "us": 0.984,
+      "sy": 10.639,
+      "id": 88.28,
+      "wa": 0.016,
+      "st": 0
+    },
+    "peak_busy_percent": 63,
+    "minimum_free_KiB": 11552300,
+    "maximum_swap_used_KiB": 0,
+    "nonzero_swap_in_out_rows": 0
+  },
+  "vmstat65000-full.txt": {
+    "samples_after_first_cumulative_row_removed": 504,
+    "averages_percent": {
+      "us": 0.861,
+      "sy": 15.683,
+      "id": 83.371,
+      "wa": 0.002,
+      "st": 0
+    },
+    "peak_busy_percent": 86,
+    "minimum_free_KiB": 11530688,
+    "maximum_swap_used_KiB": 0,
+    "nonzero_swap_in_out_rows": 0
+  },
+  "vmstat1000.txt": {
+    "samples_after_first_cumulative_row_removed": 364,
+    "averages_percent": {
+      "us": 1.212,
+      "sy": 16.327,
+      "id": 82.374,
+      "wa": 0,
+      "st": 0
+    },
+    "peak_busy_percent": 52,
+    "minimum_free_KiB": 11460716,
+    "maximum_swap_used_KiB": 0,
+    "nonzero_swap_in_out_rows": 0
+  },
+  "tcp": {
+    "seconds": 30.0067,
+    "intervals": 30,
+    "aggregate_Mbit_s": 31786,
+    "min_interval_Mbit_s": 14041.0,
+    "max_interval_Mbit_s": 36598.0
+  }
+}

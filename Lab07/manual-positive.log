@@ -1,0 +1,15 @@
+Connecting to host 127.0.0.1, port 35207
+[  5] local 127.0.0.1 port 46364 connected to 127.0.0.1 port 35207
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.9 MBytes  99.1 Mbits/sec    0   1.06 MBytes       
+[  5]   1.00-2.01   sec  11.9 MBytes  99.6 Mbits/sec    0   1.06 MBytes       
+[  5]   2.01-3.01   sec  12.0 MBytes   100 Mbits/sec    0   1.06 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-3.01   sec  35.9 MBytes   100 Mbits/sec    0             sender
+[  5]   0.00-3.01   sec  35.9 MBytes   100 Mbits/sec                  receiver
+
+iperf Done.
+
+stderr: <empty>
+returncode: 0

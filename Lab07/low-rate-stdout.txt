@@ -1,0 +1,12 @@
+Connecting to host 127.0.0.1, port 41631
+[  5] local 127.0.0.1 port 36944 connected to 127.0.0.1 port 41631
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   128 KBytes  1.04 Mbits/sec    0    585 KBytes       
+[  5]   1.00-2.00   sec   128 KBytes  1.05 Mbits/sec    0    639 KBytes       
+[  5]   2.00-3.00   sec   128 KBytes  1.05 Mbits/sec    0    639 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-3.00   sec   384 KBytes  1.05 Mbits/sec    0             sender
+[  5]   0.00-3.00   sec   384 KBytes  1.05 Mbits/sec                  receiver
+
+iperf Done.

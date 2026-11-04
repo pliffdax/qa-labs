@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/pliffdax/s7
+collecting ... collected 1 item
+
+test_iperf.py::test_throughput FAILED                                    [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_throughput ________________________________
+test_iperf.py:5: in test_throughput
+    assert client.returncode == 0, (
+E   AssertionError: iperf3 failed (exit 1): iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['iperf3', '-c', '127.0.0.1', '-p', '40973', '-t', '3', '-i', '1', '-b', '100M', '--connect-timeout', '2000'], returncode=1, stdout='', stderr='iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused\n').returncode
+---------- generated xml file: /home/pliffdax/s7/run/closed-port.xml -----------
+=========================== short test summary info ============================
+FAILED test_iperf.py::test_throughput - AssertionError: iperf3 failed (exit 1...
+============================== 1 failed in 0.02s ===============================

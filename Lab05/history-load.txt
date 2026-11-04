@@ -1,0 +1,29 @@
+cd ../s5
+whoami
+date
+iperf -v
+gnuplot --version
+sudo ip netns exec qa3520-r timeout 60s iperf -s > tcp-server.txt 2>&1 &
+sudo ip netns exec qa3520-c timeout -s INT 35s tcpdump -U -i c0 -s 128 -c 500 -w tcp-client.pcap tcp port 5001 > tcp-client-capture.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 35s tcpdump -U -i r0 -s 128 -c 500 -w tcp-server.pcap tcp port 5001 > tcp-server-capture.log 2>&1 &
+sudo ip netns exec qa3520-c bash measure.sh 10.35.20.1 tcp
+sudo gnuplot -e "datadir=\"tcp\"" plot.gp
+sudo ip netns exec qa3520-r timeout 1000s iperf -s -u > udp-server.txt 2>&1 &
+vmstat 1 505 > vmstat65000.txt &
+sudo ip netns exec qa3520-c timeout -s INT 510s tcpdump -U -i c0 -s 160 -c 4000 -w udp65000-client.pcap ip proto 17 > udp65000-capture.log 2>&1 &
+date -Is | tee udp65000-start.txt
+sudo ip netns exec qa3520-c iperf -c 10.35.20.1 -u -i 1 -t 500 -b 70G -l 65000 | tee udp65000-client.txt
+ps -p 6523 -o args= | tee udp-original-server-command.txt
+iperf -h > iperf-help.txt 2>&1
+sudo kill -TERM 6523
+sudo ip netns exec qa3520-r timeout 1000s iperf -s -u -l 65000 > udp-full-server.txt 2>&1 &
+vmstat 1 505 > vmstat65000-full.txt &
+sudo ip netns exec qa3520-c timeout -s INT 510s tcpdump -U -i c0 -s 160 -c 4000 -w udp65000-full.pcap ip proto 17 > udp65000-full-capture.log 2>&1 &
+date -Is | tee udp65000-full-start.txt
+sudo ip netns exec qa3520-c iperf -c 10.35.20.1 -u -i 1 -t 500 -b 70G -l 65000 | tee udp65000-full-client.txt
+vmstat 1 365 > vmstat1000.txt &
+sudo ip netns exec qa3520-c timeout -s INT 370s tcpdump -U -i c0 -s 128 -c 1000 -w udp1000.pcap udp port 5001 > udp1000-capture.log 2>&1 &
+date -Is | tee udp1000-start.txt
+sudo ip netns exec qa3520-c iperf -c 10.35.20.1 -u -i 1 -t 360 -b 3G -l 1000 | tee udp1000-client.txt
+ps -C iperf,tcpdump,vmstat -o user,pid,args | tee cleanup.txt
+history -w history-load.txt

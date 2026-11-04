@@ -1,0 +1,13 @@
+lease {
+  interface "c0";
+  fixed-address 10.35.20.100;
+  option subnet-mask 255.255.255.0;
+  option routers 10.35.20.1;
+  option dhcp-lease-time 600;
+  option dhcp-message-type 5;
+  option domain-name-servers 172.22.20.2;
+  option dhcp-server-identifier 10.35.20.1;
+  renew 5 2026/10/23 14:28:20;
+  rebind 5 2026/10/23 14:32:25;
+  expire 5 2026/10/23 14:33:40;
+}

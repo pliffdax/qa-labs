@@ -1,0 +1,8 @@
+PING 10.35.20.1 (10.35.20.1) 56(84) bytes of data.
+64 bytes from 10.35.20.1: icmp_seq=1 ttl=64 time=0.058 ms
+64 bytes from 10.35.20.1: icmp_seq=2 ttl=64 time=0.054 ms
+64 bytes from 10.35.20.1: icmp_seq=3 ttl=64 time=0.049 ms
+
+--- 10.35.20.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2055ms
+rtt min/avg/max/mdev = 0.049/0.053/0.058/0.003 ms

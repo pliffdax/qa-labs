@@ -1,0 +1,36 @@
+cd ../s6
+whoami
+date
+sudo ip netns exec qa3520-s python3 -m http.server 8000 --bind 172.22.20.2 --directory /home/pliffdax/s6 > http-server.log 2>&1 &
+sudo ip netns exec qa3520-s dnsmasq --no-daemon --no-resolv --no-hosts --bind-interfaces --interface=s0 --listen-address=172.22.20.2 --address=/osi3520.test/172.22.20.2 --pid-file=/run/dns-s6.pid > dns-server.log 2>&1 &
+cp ../s4/dhcpd.conf dhcpd.conf
+sed -i s/1.1.1.1/172.22.20.2/ dhcpd.conf
+sudo install -m 644 dhcpd.conf /etc/dhcp/dhcpd-s6.conf
+sudo install -m 755 ../s4/client-script.sh /etc/dhcp/dhclient-script
+cp /etc/netns/qa3520-c/resolv.conf resolv-before.conf
+sudo touch /var/lib/dhcp/dhcpd.leases.s6 /var/lib/dhcp/dhclient.s6.leases
+sudo ip -n qa3520-c addr flush dev c0 scope global
+sudo ip -n qa3520-c neigh flush all
+sudo ip -n qa3520-r neigh flush all
+sudo ip -n qa3520-s neigh flush all
+sudo ip netns exec qa3520-r dhcpd -4 -f -d -cf /etc/dhcp/dhcpd-s6.conf -lf /var/lib/dhcp/dhcpd.leases.s6 r0 > dhcp-server.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 90s tcpdump -U -i r0 -w session-inside.pcap arp or port 67 or port 68 or port 53 or tcp port 8000 > inside-capture.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 90s tcpdump -U -i r1 -w session-outside.pcap arp or port 53 or tcp port 8000 > outside-capture.log 2>&1 &
+sudo ip netns exec qa3520-c dhclient -4 -1 -v -cf /etc/dhcp/qa3520-client.conf -sf /etc/dhcp/dhclient-script -lf /var/lib/dhcp/dhclient.s6.leases -pf /run/dhclient-s6.pid c0 > dhcp-client.log 2>&1
+sudo cp /run/qa3520-resolv.conf /etc/netns/qa3520-c/resolv.conf
+sudo ip -n qa3520-c route | tee client-route.txt
+sudo ip netns exec qa3520-c curl --noproxy "*" --max-time 8 -v http://osi3520.test:8000/ -o received.html -w "HTTP %{http_code}\n" 2> http-client.log | tee http-status.txt
+sha256sum index.html received.html | tee body-hashes.txt
+cat http-client.log
+cat http-status.txt
+sha256sum index.html received.html
+cat received.html
+sudo cat /var/lib/dhcp/dhcpd.leases.s6 > server.leases
+sudo cat /var/lib/dhcp/dhclient.s6.leases > client.leases
+sudo kill -TERM 8591 8579 8549 8538
+sudo cp resolv-before.conf /etc/netns/qa3520-c/resolv.conf
+sudo ip -n qa3520-c addr replace 10.35.20.100/24 dev c0 valid_lft forever preferred_lft forever
+sudo ip -n qa3520-c route replace default via 10.35.20.1
+sudo rm /etc/dhcp/dhcpd-s6.conf /etc/dhcp/dhclient-script
+ps -C dhcpd,dhclient,dnsmasq,tcpdump -o user,pid,args | tee cleanup.txt
+history -w history-http.txt

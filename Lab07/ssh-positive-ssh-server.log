@@ -1,0 +1,12 @@
+-----------------------------------------------------------
+Server listening on 33399 (test #1)
+-----------------------------------------------------------
+Accepted connection from 127.0.0.1, port 47762
+[  5] local 127.0.0.1 port 33399 connected to 127.0.0.1 port 47776
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.29   sec  15.5 MBytes   101 Mbits/sec                  
+[  5]   1.29-2.65   sec  16.1 MBytes  99.8 Mbits/sec                  
+[  5]   2.65-3.00   sec  4.25 MBytes   100 Mbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-3.00   sec  35.9 MBytes   100 Mbits/sec                  receiver

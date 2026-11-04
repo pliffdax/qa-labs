@@ -1,0 +1,32 @@
+{
+ "owner":"Степанов Олександр Олександрович, ІО-35,3520",
+ "date":"2026-10-23",
+ "environment":"Ubuntu24.04; pliffdax@PLIFFDAX; isolated qa3520-c and qa3520-r; r0/r2 simultaneous capture; actual public Internet via VM uplink",
+ "test_plan":{
+  "id":"DHCP-NAT-3520",
+  "objective":"Validate client addressing, local link, default route, DNS, forwarding, NAT, Internet and boot restoration; isolate controlled failure",
+  "scope":["DHCP lease and application","local link","DNS and public IP/name reachability","same ICMP packet across NAT","forwarding defect and correction","persisted topology after real reboot"],
+  "preconditions":"Own saved topology; working VM uplink; current identity; new DHCP lease files and paired captures",
+  "completion_criteria":"Every planned check has actual outcome and evidence; induced defect is corrected; no own unnecessary service remains",
+  "limits":"Logical hosts in one VM, not two physical PCs. Captures r0/r2 verify R translation; additional VM/home NAT stages are not directly captured. DHCP service is separate from persisted NAT service."
+ },
+ "test_cases":[
+  {"id":"DHCP-3520-01","preconditions":"C without IPv4; fresh server/client lease files; server r0 only","steps":["Start r0 capture","Run dhcpd and dhclient","Compare DORA/options/leases/client address and route"],"expected":".100–.110/24, router10.35.20.1,DNS1.1.1.1,lease600","actual":"DORA Discover1–2,Offer3,Request4,ACK5; XID0x720b2452; assigned10.35.20.100; gateway/DNS/lease match","status":"PASS","evidence":["dhcp-final.pcap","dhcp-final-client.log","dhcp-final-server.log","server.leases","client.leases"]},
+  {"id":"NAT-3520-01","preconditions":"Client route via R, forwarding1, MASQUERADE, captures active on r0 and r2","steps":["Ping local gateway and public1.1.1.1","dig @1.1.1.1 google.com A","ping -c3 google.com","Compare paired ICMP identifiers, sequence, addresses and TTL"],"expected":"DNS and replies work, source translated on R and replies return to C","actual":"All pings3/3 loss0%; Google142.251.98.102 avg15.204ms;14frames/capture. Frame7 source10.35.20.100→172.30.35.2,id0x1876,seq1,TTL64→63. Frame8 reply destination restored to C,TTL109→108","status":"PASS","evidence":["internet-inside.pcap","internet-outside.pcap","internet-ip.txt","internet-name.txt","local-ping.txt","dns-google.txt"]},
+  {"id":"NAT-3520-03","preconditions":"Own qa3520-lab04 service enabled","steps":["Real reboot","Log in as pliffdax","Before manual network changes inspect forwarding,NAT and route","Ping public IP; inspect systemd state"],"expected":"Own topology and NAT restored","actual":"enabled/active/exited; start monotonic9270309microseconds; forwarding1 and NAT present before DHCP; initial public ping3/3","status":"PASS","evidence":["boot-service.txt","boot-monotonic.txt","forwarding.txt","nat-before.txt","client-route.txt","internet-ip.txt"]}
+ ],
+ "defect_report":{
+  "id":"NAT-3520-02",
+  "title":"Disabled forwarding on R prevents transit despite MASQUERADE",
+  "severity":"Major","priority":"High",
+  "preconditions":"Successful baseline; route and NAT retained; deliberately set R net.ipv4.ip_forward=0",
+  "steps":["ping -c2 -W1 1.1.1.1 from C"],
+  "expected":"Working R forwards packets and receives public replies",
+  "actual":"0/2,100%loss; forwarding0",
+  "cause":"Routing between R interfaces disabled; NAT alone does not enable transit",
+  "fix":"Set R forwarding1",
+  "retest":"PASS; same public address3/3 loss0%,avg15.025ms",
+  "evidence":["defect-forwarding.txt","defect-internet.txt","restored-forwarding.txt","restored-internet.txt"],
+  "classification":"Controlled configuration fault; no hardware failure claimed"
+ }
+}

@@ -1,0 +1,160 @@
+{
+  "test_plan": {
+    "id": "PYTEST-3520",
+    "objective": "Both parts: manual subprocess/parser and pytest server/client fixtures including verified SSH",
+    "environment": "Python3.12.3,iperf3.16,pytest7.4.4,Paramiko2.12.0;localhost",
+    "requirements": "Every full interval Transfer>2097152bytes and Bitrate>20000000bit/s;complete3-second coverage;retain stdout/stderr/returncode;cleanup",
+    "completion": "Manual positive/negative,16unit tests,pytestpositive/low-rate/closed-port/SSHpositive with exact intended reason",
+    "limits": [
+      "Rounded iperf display converted to estimated bytes",
+      "Synthetic unit data distinguished from actual network results",
+      "Loopback not physical throughput"
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "PY-3520-01",
+      "preconditions": "Manual server127.0.0.1:35207 in second Terminal",
+      "steps": [
+        "Run run_positive.py",
+        "Run check_positive.py"
+      ],
+      "expected": "Three complete intervals pass both strict thresholds",
+      "actual": "0–1,1–2.01,2.01–3.01;11.9/11.9/12MBytes;99.1/99.6/100Mbit/s;iperfexit0;stderr empty;PASS",
+      "status": "PASS",
+      "evidence": [
+        "manual-positive.log",
+        "manual-parser.log",
+        "manual-positive-stdout.txt"
+      ]
+    },
+    {
+      "id": "PY-3520-02",
+      "preconditions": "Server fixture;100M",
+      "steps": [
+        "pytest --case positive"
+      ],
+      "expected": "exit0 and one passed",
+      "actual": "1passed3.70s;exit0",
+      "status": "PASS",
+      "evidence": [
+        "pytest-positive.log",
+        "positive.xml",
+        "positive.exit",
+        "positive-command.json"
+      ]
+    },
+    {
+      "id": "PY-3520-03",
+      "preconditions": "Working fixture;1M profile",
+      "steps": [
+        "pytest --case low-rate"
+      ],
+      "expected": "Controlled Transfer threshold assertion;not fixtureERROR",
+      "actual": "iperfexit0;firstinterval131072bytes1040000bit/s;pytestexit1;1failed3.70s;Transfer<=2MiB",
+      "status": "EXPECTED_FAILURE",
+      "evidence": [
+        "pytest-low-rate.log",
+        "low-rate.xml",
+        "low-rate.exit",
+        "low-rate-command.json"
+      ]
+    },
+    {
+      "id": "PY-3520-04",
+      "preconditions": "Reserved bound socket but no listening server",
+      "steps": [
+        "pytest --case closed-port"
+      ],
+      "expected": "Controlled client Connection refused;not threshold assertion",
+      "actual": "Port40973;iperfexit1;pytestexit1;1failed0.02s",
+      "status": "EXPECTED_FAILURE",
+      "evidence": [
+        "pytest-closed-port.log",
+        "closed-port.xml",
+        "closed-port.exit",
+        "closed-port-stderr.txt"
+      ]
+    },
+    {
+      "id": "PY-3520-05",
+      "preconditions": "sshd active;trusted local Ed25519 publickey;getpass input not saved",
+      "steps": [
+        "pytest -s --ssh --case positive",
+        "Check server log and cleanup"
+      ],
+      "expected": "100M3s passes and SSH server/channel cleanup",
+      "actual": "1passed19.82s including password wait;exit0;3intervals12/11.9/12MBytes and101/99.3/101Mbit/s;server confirms35.9MBytes100Mbit/s",
+      "status": "PASS",
+      "evidence": [
+        "pytest-ssh-positive.log",
+        "ssh-positive.xml",
+        "ssh-positive.exit",
+        "ssh-positive-ssh-server.log"
+      ]
+    }
+  ],
+  "defect_reports": [
+    {
+      "id": "PY-3520-01",
+      "severity": "Major",
+      "priority": "High",
+      "title": "Controlled1M profile violates throughput thresholds",
+      "steps": [
+        "Run low-rate with functioning server"
+      ],
+      "expected": "Every full interval exceeds2MiB and20Mbit/s",
+      "actual": "131072bytes,1040000bit/s;Transfer assertion",
+      "cause": "Deliberate unsuitable rate profile,not pytest defect",
+      "correction": "Use100M with listening server",
+      "verification": "Separate SSHpositive passes;not same-port retest"
+    },
+    {
+      "id": "PY-3520-02",
+      "severity": "Major",
+      "priority": "High",
+      "title": "Controlled closed port prevents TCP connection",
+      "steps": [
+        "Run closed-port fixture"
+      ],
+      "expected": "Listening server accepts client",
+      "actual": "Connection refused,iperfexit1",
+      "cause": "No listening socket;not evidence of firewall failure",
+      "correction": "Start server",
+      "verification": "Independent local/SSHpositive scenarios pass"
+    }
+  ],
+  "unit_tests": "16passed0.04s;synthetic boundary/coverage/malformed/classification tests,not network measurement",
+  "reason_classification": [
+    {
+      "case": "positive",
+      "exit": 0,
+      "matched_expected_reason": true,
+      "failure_message": null,
+      "junit_sha256": "de8506d71fca01e19010bab8fda0dcea536570b1f66f81adc6338760eb9152a0"
+    },
+    {
+      "case": "low-rate",
+      "exit": 1,
+      "matched_expected_reason": true,
+      "failure_message": "AssertionError: Transfer <= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1040000.0, 'Retr': 0, 'CwndBytes': 599040.0}",
+      "junit_sha256": "4aebc5487acbd8e1e1cb0bd8e11d7a17eefde35b727073f4c787ea36204151e3"
+    },
+    {
+      "case": "closed-port",
+      "exit": 1,
+      "matched_expected_reason": true,
+      "failure_message": "AssertionError: iperf3 failed (exit 1): iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused\n  \nassert 1 == 0\n +  where 1 = CompletedProcess(args=['iperf3', '-c', '127.0.0.1', '-p', '40973', '-t', '3', '-i', '1', '-b', '100M', '--connect-timeout', '2000'], returncode=1, stdout='', stderr='iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused\\n').returncode",
+      "junit_sha256": "0fd004f1a6631e51375ec7bf990bd7c5cd3cb2419ab1847561f5bd86ed7f0eb3"
+    },
+    {
+      "case": "ssh-positive",
+      "exit": 0,
+      "matched_expected_reason": true,
+      "failure_message": null,
+      "junit_sha256": "2b999c1b065d627dfe814c6e50ad77b4e53ef7570f35fddf57845fd29b2b2b3c"
+    }
+  ],
+  "owner": "Степанов Олександр Олександрович, ІО-35, 3520",
+  "date": "2026-10-23"
+}

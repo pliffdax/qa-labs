@@ -1,0 +1,15 @@
+Internet Systems Consortium DHCP Client 4.4.3-P1
+Copyright 2004-2022 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/c0/ba:d8:f5:ee:23:99
+Sending on   LPF/c0/ba:d8:f5:ee:23:99
+Sending on   Socket/fallback
+xid: warning: no netdev with useable HWADDR found for seed's uniqueness enforcement
+xid: rand init seed (0x6aa46519) built using gethostid
+DHCPDISCOVER on c0 to 255.255.255.255 port 67 interval 1 (xid=0xb5531702)
+DHCPDISCOVER on c0 to 255.255.255.255 port 67 interval 2 (xid=0xb5531702)
+DHCPDISCOVER on c0 to 255.255.255.255 port 67 interval 4 (xid=0xb5531702)
+No DHCPOFFERS received.
+No working leases in persistent database - sleeping.

@@ -1,0 +1,4 @@
+{'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 12478054.4, 'Bitrate': 99100000.0, 'Retr': 0, 'CwndBytes': 1111490.56}
+{'Interval': '1.00-2.01', 'StartSeconds': 1.0, 'EndSeconds': 2.01, 'Seconds': 1.0099999999999998, 'TransferBytes': 12478054.4, 'Bitrate': 99600000.0, 'Retr': 0, 'CwndBytes': 1111490.56}
+{'Interval': '2.01-3.01', 'StartSeconds': 2.01, 'EndSeconds': 3.01, 'Seconds': 1.0, 'TransferBytes': 12582912.0, 'Bitrate': 100000000.0, 'Retr': 0, 'CwndBytes': 1111490.56}
+Threshold check: PASS

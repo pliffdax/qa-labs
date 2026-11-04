@@ -1,0 +1,13 @@
+[Unit]
+Description=QA Lab04 isolated topology and NAT restoration
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/qa3520/restore-lab04.sh
+ExecStop=/usr/local/lib/qa3520/restore-lab04.sh --stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "iperf3",
+    "-c",
+    "127.0.0.1",
+    "-p",
+    "41631",
+    "-t",
+    "3",
+    "-i",
+    "1",
+    "-b",
+    "1M",
+    "--connect-timeout",
+    "2000"
+  ],
+  "returncode": 0,
+  "case": "low-rate"
+}

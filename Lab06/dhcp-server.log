@@ -1,0 +1,16 @@
+Internet Systems Consortium DHCP Server 4.4.3-P1
+Copyright 2004-2022 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+Config file: /etc/dhcp/dhcpd-s6.conf
+Database file: /var/lib/dhcp/dhcpd.leases.s6
+PID file: /var/run/dhcpd.pid
+Wrote 0 leases to leases file.
+Listening on LPF/r0/c6:51:1b:1b:2d:6b/10.35.20.0/24
+Sending on   LPF/r0/c6:51:1b:1b:2d:6b/10.35.20.0/24
+Sending on   Socket/fallback/fallback-net
+Server starting service.
+DHCPDISCOVER from ba:d8:f5:ee:23:99 via r0
+DHCPOFFER on 10.35.20.100 to ba:d8:f5:ee:23:99 via r0
+DHCPREQUEST for 10.35.20.100 (10.35.20.1) from ba:d8:f5:ee:23:99 via r0
+DHCPACK on 10.35.20.100 to ba:d8:f5:ee:23:99 via r0

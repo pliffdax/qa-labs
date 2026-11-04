@@ -1,0 +1,8 @@
+cd s5
+date -Is | tee udp65000-responsive-time.txt
+uptime | tee udp65000-responsive-uptime.txt
+free -m | tee udp65000-responsive-memory.txt
+cd ../s5
+date -Is | tee udp1000-responsive-time.txt
+free -m | tee udp1000-responsive-memory.txt
+uptime | tee udp1000-responsive-uptime.txt

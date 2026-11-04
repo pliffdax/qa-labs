@@ -1,0 +1,23 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host osi3520.test:8000 was resolved.
+* IPv6: (none)
+* IPv4: 172.22.20.2
+*   Trying 172.22.20.2:8000...
+* Connected to osi3520.test (172.22.20.2) port 8000
+> GET / HTTP/1.1
+> Host: osi3520.test:8000
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+* HTTP 1.0, assume close after body
+< HTTP/1.0 200 OK
+< Server: SimpleHTTP/0.6 Python/3.12.3
+< Date: Fri, 23 Oct 2026 14:24:29 GMT
+< Content-type: text/html
+< Content-Length: 362
+< Last-Modified: Fri, 23 Oct 2026 14:06:39 GMT
+< 
+{ [362 bytes data]
+100   362  100   362    0     0  45075      0 --:--:-- --:--:-- --:--:-- 51714
+* Closing connection

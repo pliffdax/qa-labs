@@ -1,0 +1,2 @@
+default via 10.35.20.1 dev c0 
+10.35.20.0/24 dev c0 proto kernel scope link src 10.35.20.100 

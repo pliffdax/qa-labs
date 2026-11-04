@@ -1,0 +1,6 @@
+cd ../s4
+systemctl show qa3520-lab04.service -p ExecMainStartTimestampMonotonic | tee boot-monotonic.txt
+cp /usr/local/lib/qa3520/restore-lab04.sh .
+cp /etc/systemd/system/qa3520-lab04.service .
+cp /etc/qa3520-lab04.env .
+history -w history-nat-terminal2.txt

@@ -1,0 +1,114 @@
+{
+  "test_plan": {
+    "id": "TCP-UDP-3520",
+    "objective": "TCP handshake, full-duration UDP, receiver setup, packet fragmentation and resource monitoring",
+    "environment": "Ubuntu24.04, iperf2.1.9,6vCPU,15202MiB; C10.35.20.100→R10.35.20.1:5001, same VM veth",
+    "completion": "30 TCP intervals, full500/360s UDP; initial receiver defect retained and corrected with full rerun; actual vmstat and responsive-console evidence",
+    "limits": [
+      "Not physical bandwidth or MTBF",
+      "70G/3G targets not achieved",
+      "Bounded snaplen captures do not measure whole transfer"
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "TCP-3520-01",
+      "preconditions": "TCP server listening on R, captures on c0/r0",
+      "steps": [
+        "Run measure.sh for30s",
+        "Inspect SYN/SYN-ACK/ACK",
+        "Parse30 intervals and plot"
+      ],
+      "expected": "Handshake and30 one-second samples",
+      "actual": "30.0067s;113700MBytes;31786Mbit/s;min14041,max36598;frames1–3",
+      "status": "PASS",
+      "evidence": [
+        "tcp.txt",
+        "tcp.tsv",
+        "tcp-client.pcap",
+        "tcp-server.pcap",
+        "plot.gp"
+      ]
+    },
+    {
+      "id": "UDP-3520-02",
+      "preconditions": "Server iperf -s -u -l65000; vmstat running",
+      "steps": [
+        "Run65000-byte UDP at target70G for500s",
+        "Compare client/server totals",
+        "Inspect fragmentation"
+      ],
+      "expected": "Full duration, full-sized receive buffer and interpretable totals",
+      "actual": "500.0001s;client410GiB7.05Gbit/s;server390GiB6.70Gbit/s;loss334211/6774785=4.9%;44fragments for65008-byteUDP",
+      "status": "PASS",
+      "evidence": [
+        "udp65000-full-client.txt",
+        "udp-full-server.txt",
+        "udp65000-full.pcap"
+      ]
+    },
+    {
+      "id": "UDP-3520-03",
+      "preconditions": "Same full-buffer server",
+      "steps": [
+        "Run1000-byte UDP at target3G for360s",
+        "Inspect non-fragmented packets"
+      ],
+      "expected": "Full duration, datagrams fit MTU",
+      "actual": "360.0002s;client83.2GiB1.99Gbit/s;server81.1GiB1.93Gbit/s;loss2346548/89377626=2.6%;IP1028/UDP1008/MF0",
+      "status": "PASS",
+      "evidence": [
+        "udp1000-client.txt",
+        "udp-full-server.txt",
+        "udp1000.pcap"
+      ]
+    },
+    {
+      "id": "LOAD-3520-04",
+      "preconditions": "vmstat1 started before UDP; second Terminal available",
+      "steps": [
+        "Save vmstat and actual date/free/uptime during load",
+        "Check cleanup"
+      ],
+      "expected": "Responsive commands and resource data",
+      "actual": "Initial65000 console commands13:49:37–39UTC;1000 console commands14:11:56–59UTC;no swap activity. Corrected65000 GUI worked; later console attempt hit screen lock and is excluded.",
+      "status": "PASS",
+      "evidence": [
+        "vmstat65000.txt",
+        "vmstat65000-full.txt",
+        "vmstat1000.txt",
+        "udp1000-responsive-memory.txt",
+        "udp1000-responsive-time.txt",
+        "udp65000-responsive-memory.txt",
+        "cleanup.txt"
+      ]
+    }
+  ],
+  "defect_reports": [
+    {
+      "id": "UDP-3520-01",
+      "severity": "Major",
+      "priority": "High",
+      "title": "Default UDP receiver read length truncates65000-byte datagrams",
+      "preconditions": "iperf2.1.9 default UDP server readlength1470",
+      "steps": [
+        "Start iperf -s -u",
+        "Run client -u -t500 -b70G -l65000"
+      ],
+      "expected": "Full payload counted for delivered datagrams",
+      "actual": "Client448GiB7.70Gbit/s vs server8.93GiB153Mbit/s;server bytes correspond to1470-byte reads, loss12%",
+      "cause": "Receiver configuration;153Mbit/s is not full payload throughput",
+      "fix": "Restart receiver with -l65000",
+      "retest": "Full500s rerun;server390GiB6.70Gbit/s,loss4.9%",
+      "evidence": [
+        "udp65000-client.txt",
+        "udp-server.txt",
+        "iperf-help.txt",
+        "udp65000-full-client.txt",
+        "udp-full-server.txt"
+      ]
+    }
+  ],
+  "owner": "Степанов Олександр Олександрович, ІО-35, 3520",
+  "date": "2026-10-23"
+}

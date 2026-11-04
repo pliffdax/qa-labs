@@ -1,0 +1,73 @@
+{
+  "test_plan": {
+    "id": "HTTP-OSI-3520",
+    "environment": "Own C/R/S namespaces, DHCP on R, local dnsmasq and Python HTTP onS172.22.20.2:8000",
+    "objective": "One DHCP→ARP→DNS→TCP→HTTP exchange observed in two segments",
+    "completion": "DORA applied, IPv4 name resolution, HTTP200 and same362-byte body hash, paired NAT evidence",
+    "limits": [
+      "Virtual Ethernet only",
+      "No independent OSI5/6header",
+      "No TLS",
+      "AAAA Refused because noIPv6/upstream"
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "HTTP-3520-01",
+      "preconditions": "Fresh leases;C withoutIPv4;R DHCP active",
+      "steps": [
+        "Capture r0/r1",
+        "Run dhclient",
+        "Apply route and DHCP DNS"
+      ],
+      "expected": "10.35.20.100/24,gateway10.35.20.1,DNS172.22.20.2",
+      "actual": "DORA1/3,4,5,6;XID0xdda7ec50;ARP gateway9–10",
+      "status": "PASS",
+      "evidence": [
+        "session-inside.pcap",
+        "dhcp-client.log",
+        "dhcp-server.log",
+        "client-route.txt",
+        "client.leases"
+      ]
+    },
+    {
+      "id": "HTTP-3520-02",
+      "preconditions": "Client uses DHCP DNS;HTTP/DNS onS active",
+      "steps": [
+        "curl --noproxy * http://osi3520.test:8000/ without --resolve",
+        "Compare inside/outside GET"
+      ],
+      "expected": "IPv4 DNS and TCP succeed;HTTP200",
+      "actual": "A11/13→172.22.20.2;AAAA12/14Refused;TCP15–17;GET18:55128→8000;outsideGET10 translated source172.22.20.1",
+      "status": "PASS",
+      "evidence": [
+        "session-inside.pcap",
+        "session-outside.pcap",
+        "http-client.log",
+        "http-server.log"
+      ]
+    },
+    {
+      "id": "HTTP-3520-03",
+      "preconditions": "Saved received.html",
+      "steps": [
+        "Compare status and Content-Length",
+        "sha256sum source and received body"
+      ],
+      "expected": "HTTP200 and equal362-byte body",
+      "actual": "HTTP1.0 200OK,GETHTTP1.1;TCP20+22 reassembled548bytes=186header+362body;bothSHA4f84997b01ece75a9dc4970b7fae5bd9a4744cb0614322bb9c6772201a336bdb",
+      "status": "PASS",
+      "evidence": [
+        "body-hashes.txt",
+        "http-status.txt",
+        "index.html",
+        "received.html",
+        "session-inside.pcap"
+      ]
+    }
+  ],
+  "cleanup": "Own temporary services stopped; temporary DHCP config/hook removed; client static.100/24/default.1 and DNS1.1.1.1 restored; persistent stand preserved; cleanup.txt",
+  "owner": "Степанов Олександр Олександрович, ІО-35, 3520",
+  "date": "2026-10-23"
+}

@@ -1,0 +1,45 @@
+whoami
+hostname
+date
+mkdir s4 s5 s6
+cd s4
+sudo ip netns list
+sudo ip netns exec qa3520-r sysctl net.ipv4.ip_forward | tee forwarding.txt
+sudo ip netns exec qa3520-r iptables -t nat -nvL | tee nat-before.txt
+sudo ip -n qa3520-c route | tee client-route.txt
+sudo ip netns exec qa3520-c ping -c 3 10.35.20.1 | tee local-ping.txt
+sudo ip netns exec qa3520-c ping -c 3 -W 2 1.1.1.1 | tee internet-ip.txt
+cp /etc/dhcp/qa3520.conf dhcpd.conf
+sed s/b0/c0/g ../qa3/client-script.sh > client-script.sh
+sudo install -m 755 client-script.sh /etc/dhcp/dhclient-script
+sudo touch /var/lib/dhcp/dhcpd.leases.s4 /var/lib/dhcp/dhclient.s4.leases
+sudo ip -n qa3520-c addr flush dev c0 scope global
+sudo ip netns exec qa3520-r dhcpd -4 -f -cf dhcpd.conf -lf /var/lib/dhcp/dhcpd.leases.s4 -pf /run/dhcpd-s4.pid r0 > dhcp-server.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 18s tcpdump -U -i r0 -w dhcp.pcap port 67 or port 68 > dhcp-capture.log 2>&1 &
+sudo ip netns exec qa3520-c dhclient -4 -1 -v -cf /etc/dhcp/qa3520-client.conf -sf /etc/dhcp/dhclient-script -lf /var/lib/dhcp/dhclient.s4.leases -pf /run/dhclient-s4.pid c0 > dhcp-client.log 2>&1
+sudo ip netns exec qa3520-r dhcpd -4 -f -cf /etc/dhcp/qa3520.conf -lf /var/lib/dhcp/dhcpd.leases.s4 -pf /run/dhcpd-s4.pid r0 > dhcp-server-active.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 18s tcpdump -U -i r0 -w dhcp-success.pcap port 67 or port 68 > dhcp-success-capture.log 2>&1 &
+sudo ip netns exec qa3520-c dhclient -4 -1 -v -cf /etc/dhcp/qa3520-client.conf -sf /etc/dhcp/dhclient-script -lf /var/lib/dhcp/dhclient.s4.leases -pf /run/dhclient-s4.pid c0 > dhcp-success-client.log 2>&1
+sudo kill -TERM 6008 6094 6082
+sudo ip -n qa3520-c addr flush dev c0 scope global
+sudo touch /var/lib/dhcp/dhcpd.leases.s4-final /var/lib/dhcp/dhclient.s4-final.leases
+sudo ip netns exec qa3520-r dhcpd -4 -f -d -cf /etc/dhcp/qa3520.conf -lf /var/lib/dhcp/dhcpd.leases.s4-final r0 > dhcp-final-server.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 18s tcpdump -U -i r0 -w dhcp-final.pcap port 67 or port 68 > dhcp-final-capture.log 2>&1 &
+sudo ip netns exec qa3520-c dhclient -4 -1 -v -cf /etc/dhcp/qa3520-client.conf -sf /etc/dhcp/dhclient-script -lf /var/lib/dhcp/dhclient.s4-final.leases -pf /run/dhclient-s4.pid c0 > dhcp-final-client.log 2>&1
+sudo ip netns exec qa3520-r timeout -s INT 20s tcpdump -U -i r0 -w internet-inside.pcap icmp or port 53 > inside-capture.log 2>&1 &
+sudo ip netns exec qa3520-r timeout -s INT 20s tcpdump -U -i r2 -w internet-outside.pcap icmp or port 53 > outside-capture.log 2>&1 &
+sudo ip netns exec qa3520-c dig @1.1.1.1 google.com A +short | tee dns-google.txt
+sudo ip netns exec qa3520-c ping -c 3 -W 2 google.com | tee internet-name.txt
+sudo ip netns exec qa3520-r sysctl -w net.ipv4.ip_forward=0 | tee defect-forwarding.txt
+sudo ip netns exec qa3520-c ping -c 2 -W 1 1.1.1.1 | tee defect-internet.txt
+sudo ip netns exec qa3520-r sysctl -w net.ipv4.ip_forward=1 | tee restored-forwarding.txt
+sudo ip netns exec qa3520-c ping -c 3 -W 2 1.1.1.1 | tee restored-internet.txt
+sudo cat /var/lib/dhcp/dhcpd.leases.s4-final > server.leases
+sudo cat /var/lib/dhcp/dhclient.s4-final.leases > client.leases
+sudo ip netns exec qa3520-r iptables-save | tee router.rules
+uptime -s | tee boot-time.txt
+systemctl show qa3520-lab04.service -p ActiveState -p SubState -p ExecMainStartTimestamp -p UnitFileState | tee boot-service.txt
+sudo kill -TERM 6176 6168
+sudo ip -n qa3520-c addr replace 10.35.20.100/24 dev c0 valid_lft forever preferred_lft forever
+sudo rm /etc/dhcp/dhclient-script
+history -w history-nat.txt

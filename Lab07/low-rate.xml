@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="3.704" timestamp="2026-10-23T14:41:11.278902" hostname="PLIFFDAX"><testcase classname="test_iperf" name="test_throughput" time="3.685"><failure message="AssertionError: Transfer &lt;= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1040000.0, 'Retr': 0, 'CwndBytes': 599040.0}">test_iperf.py:9: in test_throughput
+    check_thresholds(parser(client.stdout))
+parser.py:67: in check_thresholds
+    assert row['TransferBytes'] &gt; TRANSFER_LIMIT, f'Transfer &lt;= 2 MiB: {row}'
+E   AssertionError: Transfer &lt;= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1040000.0, 'Retr': 0, 'CwndBytes': 599040.0}</failure></testcase></testsuite></testsuites>

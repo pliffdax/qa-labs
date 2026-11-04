@@ -1,0 +1,30 @@
+[
+  {
+    "case": "positive",
+    "exit": 0,
+    "matched_expected_reason": true,
+    "failure_message": null,
+    "junit_sha256": "de8506d71fca01e19010bab8fda0dcea536570b1f66f81adc6338760eb9152a0"
+  },
+  {
+    "case": "low-rate",
+    "exit": 1,
+    "matched_expected_reason": true,
+    "failure_message": "AssertionError: Transfer <= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1040000.0, 'Retr': 0, 'CwndBytes': 599040.0}",
+    "junit_sha256": "4aebc5487acbd8e1e1cb0bd8e11d7a17eefde35b727073f4c787ea36204151e3"
+  },
+  {
+    "case": "closed-port",
+    "exit": 1,
+    "matched_expected_reason": true,
+    "failure_message": "AssertionError: iperf3 failed (exit 1): iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused\n  \nassert 1 == 0\n +  where 1 = CompletedProcess(args=['iperf3', '-c', '127.0.0.1', '-p', '40973', '-t', '3', '-i', '1', '-b', '100M', '--connect-timeout', '2000'], returncode=1, stdout='', stderr='iperf3: error - unable to connect to server - server may have stopped running or use a different port, firewall issue, etc.: Connection refused\\n').returncode",
+    "junit_sha256": "0fd004f1a6631e51375ec7bf990bd7c5cd3cb2419ab1847561f5bd86ed7f0eb3"
+  },
+  {
+    "case": "ssh-positive",
+    "exit": 0,
+    "matched_expected_reason": true,
+    "failure_message": null,
+    "junit_sha256": "2b999c1b065d627dfe814c6e50ad77b4e53ef7570f35fddf57845fd29b2b2b3c"
+  }
+]

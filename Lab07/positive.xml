@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="3.698" timestamp="2026-10-23T14:40:33.121747" hostname="PLIFFDAX"><testcase classname="test_iperf" name="test_throughput" time="3.677" /></testsuite></testsuites>

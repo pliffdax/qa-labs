@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/pliffdax/s7
+collecting ... collected 1 item
+
+test_iperf.py::test_throughput FAILED                                    [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_throughput ________________________________
+test_iperf.py:9: in test_throughput
+    check_thresholds(parser(client.stdout))
+parser.py:67: in check_thresholds
+    assert row['TransferBytes'] > TRANSFER_LIMIT, f'Transfer <= 2 MiB: {row}'
+E   AssertionError: Transfer <= 2 MiB: {'Interval': '0.00-1.00', 'StartSeconds': 0.0, 'EndSeconds': 1.0, 'Seconds': 1.0, 'TransferBytes': 131072.0, 'Bitrate': 1040000.0, 'Retr': 0, 'CwndBytes': 599040.0}
+------------ generated xml file: /home/pliffdax/s7/run/low-rate.xml ------------
+=========================== short test summary info ============================
+FAILED test_iperf.py::test_throughput - AssertionError: Transfer <= 2 MiB: {'...
+============================== 1 failed in 3.70s ===============================
