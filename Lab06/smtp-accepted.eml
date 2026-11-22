@@ -1,0 +1,5 @@
+From: sender@lab06.test
+To: recipient@lab06.test
+Subject: QA 3520 SMTP loopback
+
+QA3520-SMTP: local delivery check.
